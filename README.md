@@ -1,37 +1,28 @@
 # 树莓派视频车
 
 #### 介绍
-基于树莓派3B+的视频车
+基于树莓派3B+的视频车：可遥控，显示小车舵机支架上的摄像头视频
 
-#### 软件架构
-软件架构说明
+#### 硬件材料
+1.  树莓派3B+
+2.  32G及以上TF卡
+3.  PS2手柄
+4.  12V(或其他)电池
+5.  L298N电机驱动模块
+6.  稳压模块(12V/或其他 转 5V)用于树莓派供电及舵机供电
+7.  小车底盘(带舵机、电机的方便些)
+8.  树莓派CSI摄像头
+8.  其他(舵机支架、开关等)
 
 
 #### 安装教程
 
-1.  xxxx
-2.  xxxx
-3.  xxxx
-
+接线图片
 #### 使用说明
 
-1.  xxxx
-2.  xxxx
-3.  xxxx
+1.  启动小车程序
+2.  使用遥控器可遥控小车行走，并控制摄像头舵机支架转动视野
 
 #### 参与贡献
 
-1.  Fork 本仓库
-2.  新建 Feat_xxx 分支
-3.  提交代码
-4.  新建 Pull Request
-
-
-#### 特技
-
-1.  使用 Readme\_XXX.md 来支持不同的语言，例如 Readme\_en.md, Readme\_zh.md
-2.  Gitee 官方博客 [blog.gitee.com](https://blog.gitee.com)
-3.  你可以 [https://gitee.com/explore](https://gitee.com/explore) 这个地址来了解 Gitee 上的优秀开源项目
-4.  [GVP](https://gitee.com/gvp) 全称是 Gitee 最有价值开源项目，是综合评定出的优秀开源项目
-5.  Gitee 官方提供的使用手册 [https://gitee.com/help](https://gitee.com/help)
-6.  Gitee 封面人物是一档用来展示 Gitee 会员风采的栏目 [https://gitee.com/gitee-stars/](https://gitee.com/gitee-stars/)
+Liang Bo
