@@ -6,7 +6,6 @@ import io
 import cv2
 import os
 os.environ['SDL_VIDEODRIVE'] = 'x11'
-from time import ctime,sleep,time
 import threading
 
 #手柄按键定义
@@ -32,6 +31,14 @@ PSS_RX = 5    #右摇杆X轴数据
 PSS_RY = 6    #右摇杆Y轴数据
 PSS_LX = 7    #左摇杆X轴数据
 PSS_LY = 8    #右摇杆Y轴数据
+
+global PS2_KEY
+global X1
+global Y1
+global X2
+global Y2
+
+MASK = [PSB_SELECT,PSB_L3,PSB_R3,PSB_START,PSB_PAD_UP,PSB_PAD_RIGHT,PSB_PAD_DOWN,PSB_PAD_LEFT,PSB_L2,PSB_R2,PSB_L1,PSB_R1,PSB_TRIANGLE,PSB_CIRCLE,PSB_CROSS,PSB_SQUARE]
 
 #小车运行状态值定义
 enSTOP = 0
@@ -83,7 +90,6 @@ def init():
     p1.start(0)
     p2.start(0)
     pwm_ENA.start(0)
-    pwm_servo.ChangeDutyCycle(0)
 
 #摄像头显示线程
 def pi_capture():
@@ -102,46 +108,52 @@ def pi_capture():
 def run():
     GPIO.output(IN1, GPIO.HIGH)
     GPIO.output(IN2, GPIO.LOW)
-    #pwm_ENA.ChangeDutyCycle(CarSpeedControl)
+    pwm_ENA.ChangeDutyCycle(CarSpeedControl)
     pwm_servo.ChangeDutyCycle(2.5+10*138/180)
-
+    time.sleep(0.02)
+    pwm_servo.ChangeDutyCycle(0)
 #小车后退
 def back():
     GPIO.output(IN1, GPIO.LOW)
     GPIO.output(IN2, GPIO.HIGH)
-    #pwm_ENA.ChangeDutyCycle(CarSpeedControl)
+    pwm_ENA.ChangeDutyCycle(CarSpeedControl)
     pwm_servo.ChangeDutyCycle(2.5+10*138/180)
-    #sleep(0.02)
+    time.sleep(0.02)
+    pwm_servo.ChangeDutyCycle(0)
 
 #小车左转   
 def left():
     GPIO.output(IN1, GPIO.HIGH)
     GPIO.output(IN2, GPIO.LOW)
-    #pwm_ENA.ChangeDutyCycle(CarSpeedControl)
+    pwm_ENA.ChangeDutyCycle(CarSpeedControl)
     pwm_servo.ChangeDutyCycle(2.5+10*96/180)
+    time.sleep(0.02)
+    pwm_servo.ChangeDutyCycle(0)
 
 #小车右转
 def right():
     GPIO.output(IN1, GPIO.HIGH)
     GPIO.output(IN2, GPIO.LOW)
-    #pwm_ENA.ChangeDutyCycle(CarSpeedControl)
+    pwm_ENA.ChangeDutyCycle(CarSpeedControl)
     pwm_servo.ChangeDutyCycle(2.5+10*180/180)
-    #sleep(0.02)
-
+    time.sleep(0.02)
+    pwm_servo.ChangeDutyCycle(0)
    #小车沿左后方后退
 def downleft():
     GPIO.output(IN1, GPIO.LOW)
     GPIO.output(IN2, GPIO.HIGH)
-    #pwm_ENA.ChangeDutyCycle(CarSpeedControl)
+    pwm_ENA.ChangeDutyCycle(CarSpeedControl)
     pwm_servo.ChangeDutyCycle(2.5+10*96/180)
-
+    time.sleep(0.02)
+    pwm_servo.ChangeDutyCycle(0)
 #小车沿右下方后退
 def downright():
     GPIO.output(IN1, GPIO.LOW)
     GPIO.output(IN2, GPIO.HIGH)
-    #pwm_ENA.ChangeDutyCycle(CarSpeedControl)
+    pwm_ENA.ChangeDutyCycle(CarSpeedControl)
     pwm_servo.ChangeDutyCycle(2.5+10*180/180)
-
+    time.sleep(0.02)
+    pwm_servo.ChangeDutyCycle(0)
     
 #小车停止   
 def brake():
@@ -149,15 +161,16 @@ def brake():
    GPIO.output(IN2, GPIO.LOW)
    pwm_ENA.ChangeDutyCycle(0)
    pwm_servo.ChangeDutyCycle(2.5+10*138/180)
-   #sleep(0.04)
-   #pwm_servo.ChangeDutyCycle(0)
+   time.sleep(0.02)
+   pwm_servo.ChangeDutyCycle(0)
 def cmotor11():
     p1.ChangeDutyCycle(2.5+10*angle1/180)
-
-   
+    time.sleep(0.02)
+    p1.ChangeDutyCycle(0)
 def cmotor22():
     p2.ChangeDutyCycle(2.5+10*angle2/180)
-
+    time.sleep(0.02)
+    #p2.ChangeDutyCycle(0)
 def control():
     global is_capture_running,CarSpeedControl,angle1,angle2
     global PS2_KEY
@@ -176,7 +189,7 @@ def control():
             #PSB_R3键按下，舵机归位
             elif PS2_KEY == PSB_R3:
                 print ("PSB_R3")
-                #servo_appointed_detection(90)
+      
             #PSB_START键按下
             elif PS2_KEY == PSB_START:
                 print ("PSB_START")
@@ -188,21 +201,18 @@ def control():
             #PSB_PAD_RIGHT键按下，小车右转
             elif PS2_KEY == PSB_PAD_RIGHT:
                 g_Carstate = enRIGHT
-                print ("PSB_PAD_RIGHT")
-                
-                #right()
+                print ("PSB_PAD_RIGHT") 
+     
             #PSB_PAD_DOWN键按下，小车后退
             elif PS2_KEY == PSB_PAD_DOWN:
                 g_Carstate = enBACK
                 print ("PSB_PAD_DOWN")
-                
-                #back()
+  
             #PSB_PAD_LEFT键按下，小车左转
             elif PS2_KEY == PSB_PAD_LEFT:
                 g_Carstate = enLEFT
                 print ("PSB_PAD_LEFT")
                 
-                #left()
             #L2键按下，小车每次加速
             elif PS2_KEY == PSB_L2:
                 print ("PSB_L2_SPEED+")
@@ -256,11 +266,7 @@ def control():
                 g_Carstate = enSTOP
                 #brake()
 #            #当L1或者R1按下时，读取摇杆数据的模拟值
-#            if PS2_KEY == ps.PSB_L1 or PS2_KEY == ps.PSB_R1:
-#                X1 = PS2_AnologaData(PSS_LX)
-#                Y1 = PS2_AnologaData(PSS_LY)
-#                X2 = PS2_AnologaData(PSS_RX)
-#                Y2 = PS2_AnologaData(PSS_RY)
+            #if PS2_KEY == PSB_L1 or PS2_KEY == PSB_R1:    
 #                #左侧摇杆控制小车的运动状态
 #                if Y1 < 5 and  80 < X1 < 180:
 #                    g_Carstate = enRUN
@@ -280,9 +286,7 @@ def control():
 #                    g_Carstate = enDOWNRIGHT
 #                else:
 #                    g_Carstate = enSTOP
-#                     
-#            #右摇杆控制舵机运动状态   
-#           
+
             #小车运动状态判断
             if g_Carstate == enSTOP:
                 brake()
@@ -300,25 +304,25 @@ def control():
                 downright()
             else:
                 brake()
-            sleep(0.1)
+            time.sleep(0.2)
     except KeyboardInterrupt:
         pass
             
     
 
 if __name__ == '__main__':
-    print("capture thread")
-    print('-' * 50)
+    #print("capture thread")
+    #print('-' * 50)
     control()
-    #capture_thread = threading.Thread(target=pi_capture,args=())   # 开启线程
-    #capture_thread.setDaemon(True)
-    #capture_thread.start()
+    capture_thread = threading.Thread(target=pi_capture,args=())   # 开启线程
+    capture_thread.setDaemon(True)
+    capture_thread.start()
     
    
 pwm_ENA.stop()
 pwm_servo.stop()
 GPIO.cleanup()
                 
-    
+#20201230   
 
     
