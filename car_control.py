@@ -67,6 +67,8 @@ cmotor2=24
 CarSpeedControl = 50
 angle1=90
 angle2=90
+
+
 #初始化就GPIO口
 def init():
     #直流电机pwm
@@ -94,10 +96,9 @@ def init():
 #摄像头显示线程
 def pi_capture():
     global is_capture_running
-    is_capture_running = True
     print("Start capture") 
     cap = cv2.VideoCapture(0)
-
+    is_capture_running = True
     while is_capture_running:
         ret,frame = cap.read()
         cv2.imshow("img",frame)
@@ -172,10 +173,9 @@ def cmotor22():
     time.sleep(0.02)
     #p2.ChangeDutyCycle(0)
 def control():
-    global is_capture_running,CarSpeedControl,angle1,angle2
+    global CarSpeedControl,angle1,angle2
     global PS2_KEY
     global CarSpeedControl
-    global g_ServoState
     print("Start control!")
     try:
         init()
@@ -286,24 +286,24 @@ def control():
 #                    g_Carstate = enDOWNRIGHT
 #                else:
 #                    g_Carstate = enSTOP
-
-            #小车运动状态判断
-            if g_Carstate == enSTOP:
-                brake()
-            elif g_Carstate == enRUN:
-                run()
-            elif g_Carstate == enLEFT:
-                left()
-            elif g_Carstate == enRIGHT:
-                right()
-            elif g_Carstate == enBACK:
-                back()
-            elif g_Carstate == enDOWNLEFT:
-                downleft()
-            elif g_Carstate == enDOWNRIGHT:
-                downright()
-            else:
-                brake()
+#
+#            #小车运动状态判断
+#            if g_Carstate == enSTOP:
+#                brake()
+#            elif g_Carstate == enRUN:
+#                run()
+#            elif g_Carstate == enLEFT:
+#                left()
+#            elif g_Carstate == enRIGHT:
+#                right()
+#            elif g_Carstate == enBACK:
+#                back()
+#            elif g_Carstate == enDOWNLEFT:
+#                downleft()
+#            elif g_Carstate == enDOWNRIGHT:
+#                downright()
+#            else:
+#                brake()
             time.sleep(0.2)
     except KeyboardInterrupt:
         pass
@@ -313,14 +313,17 @@ def control():
 if __name__ == '__main__':
     #print("capture thread")
     #print('-' * 50)
-    control()
+    #pi_capture()
+    #control()
+    running_thread = threading.Thread(target=control,args=()) 
     capture_thread = threading.Thread(target=pi_capture,args=())   # 开启线程
+    running_thread.setDaemon(True)
     capture_thread.setDaemon(True)
+    running_thread.start()
     capture_thread.start()
     
-   
-pwm_ENA.stop()
-pwm_servo.stop()
+
+
 GPIO.cleanup()
                 
 #20201230   
