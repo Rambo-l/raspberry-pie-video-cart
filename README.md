@@ -20,7 +20,8 @@
 3. ps2_video.py   ---> 第一代程序，有问题(不使用)
 4. test_ps2.py    ---> 测试手柄接受程序
 
-接线图片
+#### 接线说明
+![输入图片说明](https://images.gitee.com/uploads/images/2020/1231/200929_a1f483b7_5558625.png "pi.png")
 #### 使用说明
 ![输入图片说明](https://images.gitee.com/uploads/images/2020/1230/161924_07edc09e_5558625.png "ps.png")
 1.  启动小车程序
